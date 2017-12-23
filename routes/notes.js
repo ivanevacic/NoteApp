@@ -1,5 +1,10 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
+
+//Load Note Model
+require('../models/Note');
+const Note = mongoose.model('notes');
 
 //Add note-form
 router.get('/add', (req, res) => {

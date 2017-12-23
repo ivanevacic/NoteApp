@@ -9,6 +9,10 @@ const bodyParser = require('body-parser');
 //Initialize application
 const app = express();
 
+//Load routes
+const notes = require('./routes/notes');
+const users = require('./routes/users');
+
 
 //Map global promise -> get rid of warning
 mongoose.Promise = global.Promise
@@ -20,9 +24,6 @@ mongoose.connect('mongodb://localhost/onlinenotesdevdb', {
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
-//Load Note Model
-require('./models/note');
-const Note = mongoose.model('notes');
 
 //Handlebars middleware
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
@@ -65,15 +66,9 @@ app.get('/about', (req, res) => {
 });
 
 
-//User login route
-app.get('/users/login', (req, res)=> {
-  res.send('login');
-});
-
-//User register route
-app.get('/users/register', (req, res)=> {
-  res.send('register');
-});
+//Use routes
+app.use('/notes', notes);
+app.use('/users', users);
 
 const port = 5000;
 
