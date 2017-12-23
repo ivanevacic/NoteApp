@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const router = express.Router();
 
 //User login route
-router.get('/users/login', (req, res)=> {
-  res.send('login');
+router.get('/login', (req, res)=> {
+  res.render('users/login');
 });
 
 //User register route
-router.get('/users/register', (req, res)=> {
+router.get('/register', (req, res)=> {
   res.send('register');
 });
 
