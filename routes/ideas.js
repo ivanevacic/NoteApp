@@ -77,7 +77,7 @@ router.put('/:id', (req, res)=> {
 });
 
 //Delete note
-app.delete('/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
   Note.remove({_id: req.params.id})
       .then(() => {
         req.flash('error_msg', 'Note deleted!');
