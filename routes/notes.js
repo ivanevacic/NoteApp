@@ -1,31 +1,39 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
+const {ensureAuthenticated} = require('../helpers/auth');
+
+//Load Auth Helper
 
 //Load Note Model
 require('../models/Note');
 const Note = mongoose.model('notes');
 
 //Add note-form
-router.get('/add', (req, res) => {
+router.get('/add', ensureAuthenticated, (req, res) => {
   res.render('notes/add');
 });
 
 //Edit note-form
-router.get('/edit/:id', (req, res) => {
+router.get('/edit/:id', ensureAuthenticated, (req, res) => {
   Note.findOne({
     _id: req.params.id
   })
   .then(note => {
-    res.render('notes/edit', {
-      note: note
-    });
+    if(note.user != req.user.id){ //Protection so notes from other users entered through URL can't be edited
+      req.flash('error_msg', 'Not Authorized');
+      res.redirect('/notes');
+    } else {
+      res.render('notes/edit', {
+        note: note
+      });
+    }  
   }); 
 });
 
 //Notes index page
-router.get('/', (req, res) => {
-  Note.find({})
+router.get('/', ensureAuthenticated, (req, res) => {
+  Note.find({user: req.user.id})  //Show only notes that are created by currently logged in user
       .sort({date: 'desc'})       //sort in descending order
       .then(notes => {
         res.render('notes/index', {
@@ -35,7 +43,7 @@ router.get('/', (req, res) => {
 });
 
 //Process Form
-router.post('/', (req, res) => {
+router.post('/', ensureAuthenticated, (req, res) => {
 
   //Server side validation
   let errors = [];
@@ -54,7 +62,8 @@ router.post('/', (req, res) => {
   } else {
     const newUser = {
       title: req.body.title,
-      details: req.body.details
+      details: req.body.details,
+      user: req.user.id
     }
     new Note(newUser)
     .save()
@@ -66,7 +75,7 @@ router.post('/', (req, res) => {
 });
 
 //Edit form process
-router.put('/:id', (req, res)=> {
+router.put('/:id', ensureAuthenticated, (req, res)=> {
   Note.findOne({
     _id: req.params.id
   })
@@ -82,7 +91,7 @@ router.put('/:id', (req, res)=> {
 });
 
 //Delete note
-router.delete('/:id', (req, res) => {
+router.delete('/:id', ensureAuthenticated, (req, res) => {
   Note.remove({_id: req.params.id})
       .then(() => {
         req.flash('error_msg', 'Note deleted!');
