@@ -1,7 +1,7 @@
 {{#each notes}}
   <div class="card card-body mb-2">
     <h4>Title : {{title}}</h4>
-    <p>Details : {{details}}</p>
+    <h4>Details : {{details}}</h4>
     <p>Date created: {{date}}</p>
     <a class="btn btn-dark btn-block mb-3" href="/notes/edit/{{id}}">Edit</a>
     <form method="post" action="/notes/{{id}}?_method=DELETE">
