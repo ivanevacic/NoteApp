@@ -18,12 +18,15 @@ const users = require('./routes/users');
 //Passport Config
 require('./config/passport')(passport);
 
+//DB Config
+const db = require('./config/database');
+
 
 //Map global promise -> get rid of warning
 mongoose.Promise = global.Promise
 
 //Connect to mongoose
-mongoose.connect('mongodb://localhost/onlinenotesdevdb', {
+mongoose.connect(db.mongoURI, {
   useMongoClient: true
 })
   .then(() => console.log('MongoDB Connected'))
@@ -83,7 +86,7 @@ app.get('/about', (req, res) => {
 app.use('/notes', notes);
 app.use('/users', users);
 
-const port = 5000;
+const port = process.env.port || 5000; //port for Heroku
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
