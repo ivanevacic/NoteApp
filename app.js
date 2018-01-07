@@ -21,6 +21,10 @@ require('./config/passport')(passport);
 //DB Config
 const db = require('./config/database');
 
+//hbs helpers
+const {
+  formatDate
+} = require('./helpers/hbs');
 
 //Map global promise -> get rid of warning
 mongoose.Promise = global.Promise
@@ -34,7 +38,12 @@ mongoose.connect(db.mongoURI, {
 
 
 //Handlebars middleware
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.engine('handlebars', exphbs({
+  helpers:{
+    formatDate: formatDate
+  },
+  defaultLayout: 'main'
+}));
 app.set('view engine', 'handlebars');
 
 //Body-parser middleware
