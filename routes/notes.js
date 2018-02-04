@@ -42,7 +42,7 @@ router.get('/', ensureAuthenticated, (req, res) => {
     }); 
 });
 
-//Process Form
+//Process PostForm
 router.post('/', ensureAuthenticated, (req, res) => {
 
   //Server side validation
